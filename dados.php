@@ -10,10 +10,10 @@ return [
         ]
     ],
     [
-        "pais" => "Costa rica",
+        "pais" => "Arábia Saudita",
         "medalhas" => [
-            "ouro" => 5,
-            "prata" => 4,
+            "ouro" => 4,
+            "prata" => 3,
             "bronze" => 4
         ]
     ],
@@ -26,11 +26,11 @@ return [
         ]
     ],
     [
-        "pais" => "Arábia Saudita",
-        "medalhas" => [
-            "ouro" => 4,
-            "prata" => 3,
-            "bronze" => 4
-        ]
+    "pais" => "Costa rica",
+    "medalhas" => [
+        "ouro" => 5,
+        "prata" => 4,
+        "bronze" => 4
     ]
+],
 ];
