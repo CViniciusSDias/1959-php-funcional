@@ -3,5 +3,8 @@
         "psr-4": {
             "Alura\\Fp\\": "src/"
         }
+    },
+    "require": {
+        "ext-mbstring": "*"
     }
 }
