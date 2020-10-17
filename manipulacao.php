@@ -4,8 +4,8 @@ require_once 'vendor/autoload.php';
 
 $dados = require 'dados.php';
 
-$contador = count($dados);
-echo "Número de países: $contador\n";
+//$contador = count($dados);
+//echo "Número de países: $contador\n";
 
 $somaMedalhas = fn (int $medalhasAcumuladas, int $medalhas) => $medalhasAcumuladas + $medalhas;
 
@@ -28,6 +28,7 @@ $funcoes = \igorw\pipeline(
 );
 $dados = $funcoes($dados);
 
+exit();
 $medalhas = array_reduce(
     array_map(
         fn (array $medalhas): int => array_reduce($medalhas, $somaMedalhas, 0),
