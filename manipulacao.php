@@ -5,40 +5,38 @@ $dados = require 'dados.php';
 $contador = count($dados);
 echo "Número de países: $contador\n";
 
-function somaMedalhas(int $medalhasAcumuladas, int $medalhas) {
-    return $medalhasAcumuladas + $medalhas;
-}
+$somaMedalhas = fn (int $medalhasAcumuladas, int $medalhas) => $medalhasAcumuladas + $medalhas;
 
 function convertePaisParaLetraMaisucula(array $pais): array {
     $pais['pais'] = mb_convert_case($pais['pais'], MB_CASE_UPPER);
     return $pais;
 }
 
-function verificaSePaisTemEspacoNoNome(array $pais): bool
-{
-    return strpos($pais['pais'], ' ') !== false;
-}
+$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => strpos($pais['pais'], ' ') !== false;
+
+$comparaMedalhas = fn (array $medalhasPais1, array $medalhasPais2): callable
+    => fn (string $modalidade): int => $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
 
 $dados = array_map('convertePaisParaLetraMaisucula', $dados);
-$dados = array_filter($dados, 'verificaSePaisTemEspacoNoNome');
+$dados = array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
 $medalhas = array_reduce(
-    array_map(function (array $medalhas) {
-        return array_reduce($medalhas, 'somaMedalhas', 0);
-    }, array_column($dados, 'medalhas')),
-    'somaMedalhas',
+    array_map(
+        fn (array $medalhas): int => array_reduce($medalhas, $somaMedalhas, 0),
+        array_column($dados, 'medalhas')
+    ),
+    $somaMedalhas,
     0
 );
 
-usort($dados, function (array $pais1, array $pais2) {
+usort($dados, function (array $pais1, array $pais2) use ($comparaMedalhas) {
     $medalhasPais1 = $pais1['medalhas'];
     $medalhasPais2 = $pais2['medalhas'];
+    $comparador = $comparaMedalhas($medalhasPais1, $medalhasPais2);
 
-    $comparacaoOuro = $medalhasPais2['ouro'] <=> $medalhasPais1['ouro'];
-    $comparacaoPrata = $medalhasPais2['prata'] <=> $medalhasPais1['prata'];
-    return $comparacaoOuro !== 0 ? $comparacaoOuro
-        : ($comparacaoPrata !== 0 ? $comparacaoPrata
-        : $medalhasPais2['bronze'] <=> $medalhasPais1['bronze']);
+    return $comparador('ouro') !== 0 ? $comparador('ouro')
+        : ($comparador('prata') !== 0 ? $comparador('prata')
+        : $comparador('bronze'));
 });
 
 var_dump($dados);
